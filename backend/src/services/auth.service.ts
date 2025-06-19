@@ -8,7 +8,7 @@ function generateToken(userId: string, roleId: string) {
   return jwt.sign({ userId, roleId }, JWT_SECRET, { expiresIn: '7d' });
 }
 
-export async function register(name: string, email: string, password: string) {
+export async function registerService(name: string, email: string, password: string) {
   const existingUser = await prisma.user.findUnique({
     where: {
       email
@@ -41,7 +41,7 @@ export async function register(name: string, email: string, password: string) {
   return generateToken(user.id, user.roleId);
 }
 
-export async function login(email: string, password: string) {
+export async function loginService(email: string, password: string) {
   const user = await prisma.user.findUnique({
     where: {
       email
@@ -55,4 +55,12 @@ export async function login(email: string, password: string) {
   if (!isMatch) throw new Error('Invalid credentials');
 
   return generateToken(user.id, user.roleId);
+}
+
+export async function findUserService (id: string) {
+  return await prisma.user.findUnique({
+    where: {
+      id
+    }
+  })
 }

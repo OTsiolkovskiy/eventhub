@@ -1,6 +1,6 @@
 import prisma from '../prisma/client';
 
-export async function createRole(name: string) {
+export async function createRoleService(name: string) {
   return await prisma.role.create({
     data: {
       name
@@ -8,7 +8,7 @@ export async function createRole(name: string) {
   });
 };
 
-export async function deleteRole(id: string) {
+export async function deleteRoleService(id: string) {
   return await prisma.role.delete({
     where: {
       id
@@ -16,7 +16,7 @@ export async function deleteRole(id: string) {
   })
 };
 
-export async function updateRole(id: string, name: string) {
+export async function updateRoleServise(id: string, name: string) {
   return await prisma.role.update({
     where: {
       id
@@ -27,11 +27,11 @@ export async function updateRole(id: string, name: string) {
   })
 };
 
-export async function findAllRoles() {
+export async function findAllRolesService() {
   return await prisma.role.findMany();
 };
 
-export async function findOneRole(id: string) {
+export async function findOneRoleService(id: string) {
   return await prisma.role.findUnique({
     where: {
       id
