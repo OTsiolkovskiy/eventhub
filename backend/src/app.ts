@@ -2,10 +2,36 @@ import express from 'express';
 import authRoutes from './routes/auth.routes';
 import testRoutes from './routes/test';
 import { errorHandler } from './middlewares/errorHandler';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@as-integrations/express5';
+import { typeDefs } from './graphql/schema';
+import { authResolvers } from './graphql/resolvers';
+import { getUserFromToken } from './middlewares/auth';
 
 const app = express();
-
 app.use(express.json());
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers: [authResolvers],
+});
+
+async function startApollo() {
+  await server.start();
+
+  app.use(
+    '/graphql',
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const user = getUserFromToken(req.headers.authorization);
+        return { user };
+      }
+    })
+  )
+}
+
+startApollo();
+
 app.use(errorHandler);
 
 app.use('/api/test', testRoutes);

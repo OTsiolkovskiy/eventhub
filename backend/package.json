@@ -16,15 +16,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@apollo/server": "^4.12.2",
+    "@as-integrations/express5": "^1.1.0",
     "@prisma/client": "^6.8.2",
     "bcryptjs": "^3.0.2",
     "express": "^5.1.0",
+    "graphql": "^16.11.0",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^6.8.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.2",
+    "@types/graphql": "^14.2.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.23",
     "ts-node": "^10.9.2",
