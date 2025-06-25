@@ -7,8 +7,10 @@ import { expressMiddleware } from '@as-integrations/express5';
 import { typeDefs } from './graphql/schema';
 import { authResolvers } from './graphql/resolvers';
 import { getUserFromToken } from './middlewares/auth';
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const server = new ApolloServer({
