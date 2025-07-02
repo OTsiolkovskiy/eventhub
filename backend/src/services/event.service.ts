@@ -2,8 +2,21 @@ import prisma from "../prisma/client";
 import { EventInput } from "../types/EventInput";
 import { EventStatus } from '@prisma/client';
 
-export async function findAllEventService() {
-  return await prisma.event.findMany();
+export async function findAllEventService(filters: any = {}) {
+  const { dateFrom, dateTo, location, status } = filters || {};
+  
+  const where: any = {}
+
+  if (location) where.location = location;
+  if (status) where.status = status;
+  if (dateFrom || dateTo) {
+    where.date = {};
+
+    if (dateFrom) where.date.gte = new Date(dateFrom);
+    if (dateTo) where.date.lte = new Date(dateTo);
+  };
+
+  return await prisma.event.findMany({ where });
 };
 
 export async function findOneEventService(id: string) {

@@ -24,8 +24,8 @@ export const authResolvers = {
     role: async () => {
       return await findAllRolesService();
     },
-    events: async () => {
-      return await findAllEventService()
+    events: async (_: any, args: {filters?: any}) => {
+      return await findAllEventService(args.filters)
     },
     event: async (_: any, args: { id: string }) => {
       return await findOneEventService(args.id);
