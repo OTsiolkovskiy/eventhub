@@ -1,16 +1,39 @@
 'use client';
 
+import { EventList } from '@/components/EventList';
+import { FilterEvents } from '@/components/FilterEvents';
 import { Loader } from '@/components/Loader';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { GET_EVENTS } from '@/lib/graphql/queries';
-import { Event } from '@/types/Event';
+import { GET_EVENTS_LOCATIONS, GET_FILTERED_EVENTS } from '@/lib/graphql/queries';
 import { useQuery } from '@apollo/client';
+import { useState } from 'react';
 
 export default function Home() {
-  const { loading, error, data } = useQuery(GET_EVENTS);
+  const [location, setLocation] = useState<string>('');
+  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
+  const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
+  const [eventStatus, setEventStatus] = useState<string | undefined>(undefined);
 
-  if (error) return `Error: ${error.message}`;
+  const { data: filteredData, loading: filteredLoading } = useQuery(GET_FILTERED_EVENTS, {
+    variables: {
+      filters: {
+        dateFrom,
+        dateTo,
+        location,
+        status: eventStatus?.toUpperCase(),
+      }
+    }
+  });
+
+  const { data: locationData } = useQuery(GET_EVENTS_LOCATIONS);
+  
+  const handleLocationChange = (value: string) => {
+    setLocation(value === 'none' ? '' : value);
+  };
+
+  const handleStatusChange = (value: string) => {
+    setEventStatus(value === 'none' ? '' : value);
+  }
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-gray-100 to-gray-800">
@@ -20,38 +43,32 @@ export default function Home() {
       </Avatar>
 
       <h1 className='text-blue-500 font-bold text-5xl text-center p-8'>Eventhub</h1>
+
+      <div className='mb-8'>
+        <h2 className='text-xl font-semibold mb-4'>Filters</h2>
+
+        <FilterEvents
+          locationData={locationData}
+          location={location}
+          onLocationChange={handleLocationChange}
+          dateFrom={dateFrom}
+          setDateFrom={setDateFrom}
+          dateTo={dateTo}
+          setDateTo={setDateTo}
+          eventStatus={eventStatus}
+          onStatusChange={handleStatusChange}
+        />
+        
+      </div>
+
       <h2 className='text-xl font-semibold mb-4'>Upcoming events</h2>
 
-      {loading ? (
+      {(filteredLoading) ? (
         <div className="flex justify-center items-center min-h-[50vh] w-full">
           <Loader />
         </div>
       ) : (
-        <div className='grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
-          {data.events.map((event: Event) => (
-            <Card key={event.id} className="bg-white/90 backdrop-blur-md rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition">
-              <CardHeader className="pb-2">
-                <h3 className="text-xl font-semibold text-gray-800">{event.title}</h3>
-                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-md inline-block mt-1">
-                  📅{' '}
-                  {new Date(Number(event.date)).toLocaleDateString(undefined, {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
-              </CardHeader>
-              <CardContent className="space-y-2 text-gray-700 text-sm">
-                <div>
-                  <p><strong>📍 Location:</strong> {event.location}</p>
-                  <p><strong>🪑 Seats:</strong> {event.totalSeats}</p>
-                  <p><strong>ℹ️ Status:</strong> {event.status}</p>
-                  <p className="pt-2 text-gray-600 italic">{event.description}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <EventList events={filteredData.events || []} />
       )}
     </div>
    );

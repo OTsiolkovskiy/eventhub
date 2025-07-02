@@ -1,14 +1,23 @@
-export const typeDefs = `#graphql
+import { gql } from 'graphql-tag';
+
+export const typeDefs = gql`
   enum EventStatus {
     SCHEDULED
     CANCELLED
     COMPLETED
   }
 
+  input EventFilterInput {
+    dateFrom: String
+    dateTo: String
+    location: String
+    status: String
+  }
+
   type Query {
     me: User
     role: [Role!]!
-    events: [Event!]!
+    events(filters: EventFilterInput): [Event!]!
     event(id: String!): Event!
   }
 
@@ -63,7 +72,7 @@ export const typeDefs = `#graphql
     date: String!
     location: String!
     totalSeats:  Int!
-    availableSeats: Int!
+    availableSeats: Int
     status: EventStatus!
     createdAt: String!
     updatedAt: String
