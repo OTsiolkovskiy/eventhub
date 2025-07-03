@@ -14,6 +14,20 @@ export const GET_EVENTS = gql`
   }
 `;
 
+export const GET_EVENT_BY_ID = gql`
+  query getEventById($eventId: String!) {
+    event(id: $eventId) {
+      id
+      title
+      location
+      description
+      date
+      totalSeats
+      status
+    }
+  }
+`;
+
 export const GET_EVENTS_LOCATIONS = gql`
   query getAllEvents {
     events {

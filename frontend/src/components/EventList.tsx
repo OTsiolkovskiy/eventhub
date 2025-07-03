@@ -1,15 +1,24 @@
 import { Event } from "@/types/Event"
 import { Card, CardContent, CardHeader } from "./ui/card"
+import { useRouter } from "next/navigation";
 
 type EventListProps  = {
   events: Event[];
 };
 
-export const EventList = ({events}: EventListProps ) => {
+export const EventList = ({ events }: EventListProps) => {
+  const router = useRouter();
+
   return (
     <div className='grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
       {events.map((event: Event) => (
-        <Card key={event.id} className="bg-white/90 backdrop-blur-md rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition">
+        <Card
+          key={event.id}
+          className="bg-white/90 backdrop-blur-md rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
+          onClick={() => {
+            router.push(`/${event.id}`)
+          }}
+        >
           <CardHeader className="pb-2">
             <h3 className="text-xl font-semibold text-gray-800">{event.title}</h3>
             <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-md inline-block mt-1">

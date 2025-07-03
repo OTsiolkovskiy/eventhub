@@ -8,6 +8,7 @@ export const typeDefs = gql`
   }
 
   input EventFilterInput {
+    id: String
     dateFrom: String
     dateTo: String
     location: String
