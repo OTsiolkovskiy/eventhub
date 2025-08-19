@@ -15,10 +15,15 @@ export const typeDefs = gql`
     status: String
   }
 
+  type PaginatedEvents {
+    data: [Event!]!
+    totalCount: Int!
+  }
+
   type Query {
     me: User
     role: [Role!]!
-    events(filters: EventFilterInput): [Event!]!
+    events(filters: EventFilterInput, skip: Int, take: Int): PaginatedEvents!
     event(id: String!): Event!
   }
 

@@ -2,7 +2,7 @@ import { SelectField } from "./SelectField"
 import { DatePickerWithClear } from "./DatePickerWithClear"
 
 type FilterEventsProps = {
-  locationData: { events: { location: string }[] };
+  locationData: { events: { data: { location: string }[] } };
   location: string;
   onLocationChange: (value: string) => void;
   dateFrom: Date | undefined;
@@ -26,7 +26,7 @@ export const FilterEvents = ({
 }: FilterEventsProps) => {
 
   const uniqueLocations: string[] = Array.from(
-    new Set(locationData?.events.map((event: { location: string }) => event.location))
+    new Set(locationData?.events?.data?.map((event: { location: string }) => event.location))
   );
 
   const statuses = ['scheduled', 'cancelled', 'completed'];

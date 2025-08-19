@@ -2,7 +2,7 @@ import prisma from "../prisma/client";
 import { EventInput } from "../types/EventInput";
 import { EventStatus } from '@prisma/client';
 
-export async function findAllEventService(filters: any = {}) {
+export async function findAllEventService(filters: any = {}, skip: any, take: any) {
   const { dateFrom, dateTo, location, status } = filters || {};
   
   const where: any = {}
@@ -16,8 +16,28 @@ export async function findAllEventService(filters: any = {}) {
     if (dateTo) where.date.lte = new Date(dateTo);
   };
 
-  return await prisma.event.findMany({ where });
+  return await prisma.event.findMany({
+    where,
+    skip,
+    take
+  });
 };
+
+export async function countAllEvents(filters: any = {}) {
+  const { dateFrom, dateTo, location, status } = filters || {};
+
+  const where: any = {};
+
+  if (location) where.location = location;
+  if (status) where.status = status;
+  if (dateFrom || dateTo) {
+    where.date = {};
+    if (dateFrom) where.date.gte = new Date(dateFrom);
+    if (dateTo) where.date.lte = new Date(dateTo);
+  }
+
+  return await prisma.event.count({ where });
+}
 
 export async function findOneEventService(id: string) {
   return await prisma.event.findUnique({
@@ -64,4 +84,4 @@ export async function deleteEventService(id: string) {
       id
     }
   })
-}
+};
