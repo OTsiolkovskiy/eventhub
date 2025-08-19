@@ -1,5 +1,6 @@
 import { findUserService, loginService, registerService } from '../services/auth.service';
 import {
+  countAllEvents,
   createEventService,
   deleteEventService,
   findAllEventService,
@@ -24,8 +25,13 @@ export const authResolvers = {
     role: async () => {
       return await findAllRolesService();
     },
-    events: async (_: any, args: {filters?: any}) => {
-      return await findAllEventService(args.filters)
+    events: async (_: any, args: { filters?: any, skip?: number, take?: number }) => {
+      const data = await findAllEventService(args.filters, args.skip, args.take);
+      const totalCount = await countAllEvents(args.filters);
+      return {
+        data,
+        totalCount
+      }
     },
     event: async (_: any, args: { id: string }) => {
       return await findOneEventService(args.id);

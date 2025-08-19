@@ -13,6 +13,11 @@ export default function Home() {
   const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
   const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
   const [eventStatus, setEventStatus] = useState<string | undefined>(undefined);
+  const [page, setPage] = useState<number>(1);
+
+  const take = 6;
+  const realTake = take + 1;
+  const skip = (page - 1) * take;
 
   const { data: filteredData, loading: filteredLoading } = useQuery(GET_FILTERED_EVENTS, {
     variables: {
@@ -21,12 +26,18 @@ export default function Home() {
         dateTo,
         location,
         status: eventStatus?.toUpperCase(),
-      }
+      },
+      skip,
+      take: realTake
     }
   });
 
+  const dataToShow = filteredData?.events?.data?.slice(0, take) || [];
+  const totalCount = filteredData?.events?.totalCount || 0;
+  const lastPage = Math.ceil(totalCount / take);
+
   const { data: locationData } = useQuery(GET_EVENTS_LOCATIONS);
-  
+
   const handleLocationChange = (value: string) => {
     setLocation(value === 'none' ? '' : value);
   };
@@ -68,8 +79,44 @@ export default function Home() {
           <Loader />
         </div>
       ) : (
-        <EventList events={filteredData.events || []} />
+        <EventList events={dataToShow} />
       )}
+      
+      <div className='flex gap-8 justify-center mt-5'>
+        <button
+          type='button'
+          className={page <= 1 ? 'text-gray-700' : 'text-white'}
+          disabled={page <= 1}
+          onClick={() => setPage(1)}
+        >
+          {'<<'}
+        </button>
+        <button
+          type='button'
+          className={page <= 1 ? 'text-gray-700' : 'text-white'}
+          disabled={page <= 1}
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+        >
+          {'Prev <'}
+        </button>
+        <span className='text-white'>Page {page}</span>
+        <button
+          type='button'
+          className={page >= lastPage ? 'text-gray-700' : 'text-white'}
+          disabled={page >= lastPage}
+          onClick={() => setPage(prev => Math.min(prev + 1, lastPage))}
+        >
+          {'> Next'}
+        </button>
+        <button
+          className={page >= lastPage ? 'text-gray-700' : 'text-white'}
+          disabled={page >= lastPage}
+          onClick={() => setPage(lastPage)}
+        >
+          {'>>'}
+        </button>
+      </div>
+
     </div>
    );
 }
