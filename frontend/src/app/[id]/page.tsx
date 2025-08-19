@@ -4,17 +4,30 @@ import { Loader } from "@/components/Loader";
 import { GET_EVENT_BY_ID } from "@/lib/graphql/queries";
 import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const EventDetailPage = () => {
   
+  const router = useRouter();
   const params = useParams();
   const id = params.id;
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+  useEffect(() => { 
+    if (!token) {
+      router.push('/login');
+    }
+  }, [token, router]);
 
   const { data, loading, error } = useQuery(GET_EVENT_BY_ID, {
     variables: {
       eventId: id
-    }
-  })
+    },
+    skip: !token,
+  });
+
+  if (!token) return null;
 
   if (loading) {
     return (
