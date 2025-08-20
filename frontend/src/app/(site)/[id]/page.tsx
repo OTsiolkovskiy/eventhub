@@ -18,7 +18,7 @@ const EventDetailPage = () => {
 
   useEffect(() => { 
     if (!initializing && !isAuthenticated) {
-      router.push('/login');
+      router.push('auth?mode=login');
     }
   }, [initializing, isAuthenticated, router]);
 
