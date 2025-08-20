@@ -6,17 +6,18 @@ import { useMutation } from '@apollo/client';
 import { useRouter } from "next/navigation";
 import { LOGIN_MUTATION, REGISTER_MUTATION } from "@/lib/graphql/mutations";
 import { AuthForm } from "@/components/AuthForm";
+import { useAuth } from "@/context/AuthContext";
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
-  const [formValues, setFormValues] = useState({ name: '', email: '', password: '' })
-
+  const [formValues, setFormValues] = useState({ name: '', email: '', password: '' });
+  const { login } = useAuth();
   const router = useRouter();
 
   const [register, { loading: regLoading }] = useMutation(REGISTER_MUTATION, {
     onCompleted: (data) => {
       const token = data.register.token;
-      localStorage.setItem('token', token);
+      login(token);
       router.push('/');
     },
     onError: (err) => {
@@ -25,10 +26,10 @@ const LoginPage = () => {
     },
   });
 
-  const [login, { loading: loginLoading }] = useMutation(LOGIN_MUTATION, {
+  const [signIn, { loading: loginLoading }] = useMutation(LOGIN_MUTATION, {
     onCompleted: (data) => {
       const token = data.login.token;
-      localStorage.setItem('token', token);
+      login(token)
       router.push('/');
     },
     onError: (err) => {
@@ -44,7 +45,7 @@ const LoginPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLogin) {
-      login({ variables: {email: formValues.email, password: formValues.password} })
+      signIn({ variables: {email: formValues.email, password: formValues.password} })
     } else {
       register({ variables: formValues });
     }
