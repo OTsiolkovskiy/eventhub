@@ -4,19 +4,31 @@ import { LogIn, LogOut, UserPlus } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
 
 export const Header = () => {
   const router = useRouter();
   const { isAuthenticated, initializing, logout } = useAuth();
 
   const goHome = () => router.push('/');
-  const goAuth = () => router.push('/login');
-  const goRegister = () => router.push('/login');
+  const goAuth = () => router.push('/auth?mode=login');
+  const goRegister = () => router.push('/auth?mode=register');
 
   return (
     <header className="w-full border-b bg-white shadow-sm">
-      <div className="container mx-auto flex items-center justify-between py-3 px-4">
-        Header
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4 py-3 px-4">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={goHome}
+        >
+          <Image
+            src="/logo.png"
+            alt="EventHub Logo"
+            width={80}
+            height={80}
+          />
+          <span className="font-bold text-xl">EventHub</span>
+        </div>
 
         <div className="flex gap-2 items-center">
 
