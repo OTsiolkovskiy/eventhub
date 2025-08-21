@@ -16,7 +16,7 @@ export const Header = () => {
 
   return (
     <header className="w-full border-b bg-white shadow-sm">
-      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4 py-3 px-4">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div
           className="flex items-center gap-2 cursor-pointer"
           onClick={goHome}
