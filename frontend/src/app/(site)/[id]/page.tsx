@@ -6,28 +6,30 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const EventDetailPage = () => {
   
   const router = useRouter();
   const params = useParams();
   const id = params.id;
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+  const { isAuthenticated, initializing } = useAuth();
 
   useEffect(() => { 
-    if (!token) {
-      router.push('/login');
+    if (!initializing && !isAuthenticated) {
+      router.push('auth?mode=login');
     }
-  }, [token, router]);
+  }, [initializing, isAuthenticated, router]);
 
   const { data, loading, error } = useQuery(GET_EVENT_BY_ID, {
     variables: {
       eventId: id
     },
-    skip: !token,
+    skip: !isAuthenticated,
   });
 
-  if (!token) return null;
+  if (initializing || !isAuthenticated) return null;
 
   if (loading) {
     return (

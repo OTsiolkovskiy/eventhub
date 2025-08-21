@@ -3,7 +3,7 @@
 import { EventList } from '@/components/EventList';
 import { FilterEvents } from '@/components/FilterEvents';
 import { Loader } from '@/components/Loader';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { GET_EVENTS_LOCATIONS, GET_FILTERED_EVENTS } from '@/lib/graphql/queries';
 import { useQuery } from '@apollo/client';
 import { useState } from 'react';
@@ -48,10 +48,10 @@ export default function Home() {
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-gray-100 to-gray-800">
-      <Avatar>
+      {/* <Avatar>
         <AvatarImage src="https://github.com/shadcn.png" />
         <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
+      </Avatar> */}
 
       <h1 className='text-blue-500 font-bold text-5xl text-center p-8'>Eventhub</h1>
 

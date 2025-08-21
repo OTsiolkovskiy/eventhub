@@ -1,6 +1,7 @@
 import { Event } from "@/types/Event"
 import { Card, CardContent, CardHeader } from "./ui/card"
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 type EventListProps  = {
   events: Event[];
@@ -9,6 +10,8 @@ type EventListProps  = {
 export const EventList = ({ events }: EventListProps) => {
   const router = useRouter();
 
+   const { isAuthenticated, initializing } = useAuth();
+
   return (
     <div className='grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
       {events.map((event: Event) => (
@@ -16,7 +19,11 @@ export const EventList = ({ events }: EventListProps) => {
           key={event.id}
           className="bg-white/90 backdrop-blur-md rounded-2xl shadow-md border border-gray-200 hover:shadow-lg transition"
           onClick={() => {
-            router.push(`/${event.id}`)
+            if (!initializing && !isAuthenticated) {
+              router.push('auth?mode=login');
+            } else {
+              router.push(`/${event.id}`)
+            }
           }}
         >
           <CardHeader className="pb-2">
