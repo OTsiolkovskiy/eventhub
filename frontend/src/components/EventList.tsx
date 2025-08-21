@@ -41,6 +41,7 @@ export const EventList = ({ events }: EventListProps) => {
             <div>
               <p><strong>📍 Location:</strong> {event.location}</p>
               <p><strong>🪑 Seats:</strong> {event.totalSeats}</p>
+              <p><strong>🪑 Available Seats:</strong> {event.availableSeats}</p>
               <p><strong>ℹ️ Status:</strong> {event.status}</p>
               <p className="pt-2 text-gray-600 italic">{event.description}</p>
             </div>

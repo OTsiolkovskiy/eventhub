@@ -15,3 +15,16 @@ mutation loginUser($email: String!, $password: String!) {
   }
 }
 `;
+
+export const BOOK_EVENT = gql`
+  mutation BookEvent($eventId: String!, $seats: Int!) {
+    bookEvent(eventId: $eventId, seats: $seats) {
+      id
+      seats
+      event {
+        id
+        availableSeats
+      }
+    }
+  }
+`;

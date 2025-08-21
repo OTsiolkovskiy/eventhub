@@ -1,4 +1,6 @@
+import prisma from '../prisma/client';
 import { findUserService, loginService, registerService } from '../services/auth.service';
+import { bookEventService } from '../services/booking.service';
 import {
   countAllEvents,
   createEventService,
@@ -75,6 +77,30 @@ export const authResolvers = {
 
     deleteEvent: async (_: any, args: {id: string}) => {
       return await deleteEventService(args.id);
+    }, 
+
+    bookEvent: async (_: any, args: { eventId: string, seats: number }, context: any) => {
+      const userId = context.user?.userId;
+      if (!userId) {
+        throw new Error('Unauthorized');
+      }
+      return await bookEventService(userId, args.eventId, args.seats);
     }
+  },
+
+  Event: {
+    availableSeats: async (parent: any) => {
+      const agg = await prisma.booking.aggregate({
+        where: { eventId: parent.id },
+        _sum: { seats: true },
+      });
+      const booked = agg._sum.seats ?? 0;
+      return parent.totalSeats - booked;
+    },
+  },
+
+  Booking: {
+    user: (parent: any) => prisma.user.findUnique({ where: { id: parent.userId } }),
+    event: (parent: any) => prisma.event.findUnique({ where: { id: parent.eventId } }),
   }
 };

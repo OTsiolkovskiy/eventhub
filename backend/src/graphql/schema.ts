@@ -38,6 +38,8 @@ export const typeDefs = gql`
     createEvent(input: CreateEventInput): Event!
     updateEvent(id: String!, input: UpdateEventInput!): Event!
     deleteEvent(id: String!): Event!
+
+    bookEvent(eventId: String!, seats: Int!): Booking!
   }
 
   input CreateEventInput {
