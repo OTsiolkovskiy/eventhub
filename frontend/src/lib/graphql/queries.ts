@@ -65,3 +65,18 @@ export const GET_ME = gql`
     }
   }
 `;
+
+export const GET_MY_BOOKINGS = gql`
+  query GetMyBookings {
+    myBookings {
+      id
+      seats
+      event {
+        id
+        title
+        date
+        location
+      }
+    }
+  }
+`;

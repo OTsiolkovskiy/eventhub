@@ -1,6 +1,6 @@
 import prisma from '../prisma/client';
 import { findUserService, loginService, registerService } from '../services/auth.service';
-import { bookEventService } from '../services/booking.service';
+import { bookEventService, cancelBookingService } from '../services/booking.service';
 import {
   countAllEvents,
   createEventService,
@@ -37,7 +37,16 @@ export const authResolvers = {
     },
     event: async (_: any, args: { id: string }) => {
       return await findOneEventService(args.id);
-    }
+    },
+    myBookings: async (_: any, __: any, context: any) => {
+      const userId = context.user?.userId;
+    if (!userId) throw new Error("Unauthorized");
+
+    return await prisma.booking.findMany({
+      where: { userId },
+      include: { event: true },
+    });
+  }
   },
 
   Mutation: {
@@ -85,7 +94,14 @@ export const authResolvers = {
         throw new Error('Unauthorized');
       }
       return await bookEventService(userId, args.eventId, args.seats);
-    }
+    },
+
+    cancelBooking: async (_: any, args: { bookingId: string }, context: any) => {
+      const userId = context.user?.userId;
+      if (!userId) throw new Error("Unauthorized");
+
+      return await cancelBookingService(userId, args.bookingId);
+    },
   },
 
   Event: {

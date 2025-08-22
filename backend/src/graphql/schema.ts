@@ -25,6 +25,7 @@ export const typeDefs = gql`
     role: [Role!]!
     events(filters: EventFilterInput, skip: Int, take: Int): PaginatedEvents!
     event(id: String!): Event!
+    myBookings: [Booking!]!
   }
 
   type Mutation {
@@ -40,6 +41,7 @@ export const typeDefs = gql`
     deleteEvent(id: String!): Event!
 
     bookEvent(eventId: String!, seats: Int!): Booking!
+    cancelBooking(bookingId: String!): Booking!
   }
 
   input CreateEventInput {
