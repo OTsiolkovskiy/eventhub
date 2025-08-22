@@ -55,3 +55,13 @@ export const GET_FILTERED_EVENTS = gql`
     }
   }
 `;
+
+export const GET_ME = gql`
+  query Me {
+    me {
+      id
+      userName
+      email
+    }
+  }
+`;

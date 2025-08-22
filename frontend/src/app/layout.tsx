@@ -13,11 +13,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-gray-100 text-gray-900">
-        <AuthProvider>
-          <ApolloProvider client={apolloClient}>
+        <ApolloProvider client={apolloClient}>
+          <AuthProvider>
             {children}
-          </ApolloProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </ApolloProvider>
       </body>
     </html>
   );

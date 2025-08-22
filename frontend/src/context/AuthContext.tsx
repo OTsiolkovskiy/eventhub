@@ -1,7 +1,16 @@
+import { GET_ME } from "@/lib/graphql/queries";
+import { useQuery } from "@apollo/client";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react";
+
+type User = {
+  id: string;
+  userName: string;
+  email: string;
+};
 
 type AuthContextValue = {
   token: string | null;
+  user: User | null;
   isAuthenticated: boolean;
   initializing: boolean;
   login: (token: string) => void;
@@ -13,6 +22,10 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [initializing, setInitializing] = useState(true);
+
+  const { data, refetch } = useQuery(GET_ME, {
+    skip: !token,
+  });
 
   useEffect(() => {
     const t = typeof window !== undefined ? localStorage.getItem('token') : null;
@@ -29,7 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback((newToken: string) => {
     localStorage.setItem('token', newToken);
     setToken(newToken);
-  }, []);
+    refetch();
+  }, [refetch]);
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');
@@ -38,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ token, isAuthenticated: !!token, initializing, login, logout }}
+      value={{ token, user: data?.me ?? null, isAuthenticated: !!token, initializing, login, logout }}
     >
       {children}
     </AuthContext.Provider>
