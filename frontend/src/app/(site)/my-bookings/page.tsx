@@ -1,6 +1,8 @@
 'use client';
 
 import { Loader } from "@/components/Loader";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAuth } from "@/context/AuthContext";
 import { CANCEL_BOOKING } from "@/lib/graphql/mutations";
 import { GET_MY_BOOKINGS } from "@/lib/graphql/queries";
@@ -63,13 +65,37 @@ const MyBookings = () => {
                     <span className="text-sm text-gray-500">
                       {eventDate.toLocaleDateString()}
                     </span>
-                    <button
-                      onClick={() => cancelBooking({ variables: { bookingId: booking.id } })}
-                      disabled={cancelling}
-                      className="inline-flex items-center gap-2 border border-red-500 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      🗑 {cancelling ? "Cancelling..." : "Cancel"}
-                    </button>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button
+                          className="inline-flex items-center gap-2 border border-red-500 text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          🗑 Cancel
+                        </button>
+                      </DialogTrigger>
+
+                      <DialogContent className="sm:max-w-[425px] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <DialogHeader>
+                          <DialogTitle>🗑 {cancelling ? "Cancelling..." : "Cancel"}</DialogTitle>
+                          <DialogDescription>
+                            Are you sure you want to cancel your booking? This action cannot be undone.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter className="flex justify-end gap-2">
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DialogClose>
+                          <Button
+                            variant="destructive"
+                            onClick={() => cancelBooking({ variables: { bookingId: booking.id } })}
+                          >
+                            Yes, Cancel
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    
                   </div>
                 </div>
 
