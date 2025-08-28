@@ -33,3 +33,18 @@ export const bookEventService = async (userId: string, eventId: string, seats: n
     return booking;
   });
 };
+
+export const cancelBookingService = async (userId: string, bookingId: string) => {
+  return await prisma.$transaction(async (tx) => {
+    const booking = await tx.booking.findUnique({
+      where: { id: bookingId },
+    });
+
+    if (!booking) throw new Error("Booking not found");
+    if (booking.userId !== userId) throw new Error("Unauthorized");
+
+    await tx.booking.delete({ where: { id: bookingId } });
+
+    return booking;
+  });
+};

@@ -28,3 +28,17 @@ export const BOOK_EVENT = gql`
     }
   }
 `;
+
+export const CANCEL_BOOKING = gql`
+  mutation CancelBooking($bookingId: String!) {
+    cancelBooking(bookingId: $bookingId) {
+      id
+      seats
+      event {
+        id
+        title
+        availableSeats
+      }
+    }
+  }
+`;
