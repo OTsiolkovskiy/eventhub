@@ -26,6 +26,7 @@
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2",
+    "node-cron": "^4.2.1",
     "prisma": "^6.8.2"
   },
   "devDependencies": {
