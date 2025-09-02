@@ -3,7 +3,7 @@
 import { EventList } from '@/components/EventList';
 import { FilterEvents } from '@/components/FilterEvents';
 import { Loader } from '@/components/Loader';
-// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Pagination } from '@/components/Pagination';
 import { GET_EVENTS_LOCATIONS, GET_FILTERED_EVENTS } from '@/lib/graphql/queries';
 import { useQuery } from '@apollo/client';
 import { useState } from 'react';
@@ -48,11 +48,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-br from-gray-100 to-gray-800">
-      {/* <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar> */}
-
       <h1 className='text-blue-500 font-bold text-5xl text-center p-8'>Eventhub</h1>
 
       <div className='mb-8'>
@@ -81,42 +76,8 @@ export default function Home() {
       ) : (
         <EventList events={dataToShow} />
       )}
-      
-      <div className='flex gap-8 justify-center mt-5'>
-        <button
-          type='button'
-          className={page <= 1 ? 'text-gray-700' : 'text-white'}
-          disabled={page <= 1}
-          onClick={() => setPage(1)}
-        >
-          {'<<'}
-        </button>
-        <button
-          type='button'
-          className={page <= 1 ? 'text-gray-700' : 'text-white'}
-          disabled={page <= 1}
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-        >
-          {'Prev <'}
-        </button>
-        <span className='text-white'>Page {page}</span>
-        <button
-          type='button'
-          className={page >= lastPage ? 'text-gray-700' : 'text-white'}
-          disabled={page >= lastPage}
-          onClick={() => setPage(prev => Math.min(prev + 1, lastPage))}
-        >
-          {'> Next'}
-        </button>
-        <button
-          className={page >= lastPage ? 'text-gray-700' : 'text-white'}
-          disabled={page >= lastPage}
-          onClick={() => setPage(lastPage)}
-        >
-          {'>>'}
-        </button>
-      </div>
 
+      <Pagination page={page} lastPage={lastPage} setPage={setPage} />
     </div>
    );
 }
