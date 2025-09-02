@@ -8,10 +8,16 @@ import { typeDefs } from './graphql/schema';
 import { authResolvers } from './graphql/resolvers';
 import { getUserFromToken } from './middlewares/auth';
 import cors from 'cors';
+import cron from 'node-cron';
+import { updateCompletedEvents } from './jobs/updateCompletedEvents';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+updateCompletedEvents();
+
+cron.schedule('0 0 * * *', updateCompletedEvents);
 
 const server = new ApolloServer({
   typeDefs,
