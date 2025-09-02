@@ -7,8 +7,7 @@
     "dev": "ts-node-dev src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "postinstall": "prisma generate",
-    "update-events": "ts-node scripts/updateCompletedEvents.ts"
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "ts-node src/prisma/seed.ts"
