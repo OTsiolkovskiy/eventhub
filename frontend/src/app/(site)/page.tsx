@@ -8,42 +8,46 @@ import { GET_EVENTS_LOCATIONS, GET_FILTERED_EVENTS } from '@/lib/graphql/queries
 import { useQuery } from '@apollo/client';
 import { useState } from 'react';
 
+const EVENTS_PER_PAGE = 6;
+
 export default function Home() {
-  const [location, setLocation] = useState<string>('');
-  const [dateFrom, setDateFrom] = useState<Date | undefined>(undefined);
-  const [dateTo, setDateTo] = useState<Date | undefined>(undefined);
-  const [eventStatus, setEventStatus] = useState<string | undefined>(undefined);
+  const [filters, setFilters] = useState({
+    location: '',
+    dateFrom: undefined as Date | undefined,
+    dateTo: undefined as Date | undefined,
+    eventStatus: undefined as string | undefined,
+  })
+
   const [page, setPage] = useState<number>(1);
 
-  const take = 6;
-  const realTake = take + 1;
-  const skip = (page - 1) * take;
+  const realTake = EVENTS_PER_PAGE + 1;
+  const skip = (page - 1) * EVENTS_PER_PAGE;
 
   const { data: filteredData, loading: filteredLoading } = useQuery(GET_FILTERED_EVENTS, {
     variables: {
       filters: {
-        dateFrom,
-        dateTo,
-        location,
-        status: eventStatus?.toUpperCase(),
+        dateFrom: filters.dateFrom,
+        dateTo: filters.dateTo,
+        location: filters.location,
+        status: filters.eventStatus?.toUpperCase(),
       },
       skip,
       take: realTake
     }
   });
 
-  const dataToShow = filteredData?.events?.data?.slice(0, take) || [];
+  const dataToShow = filteredData?.events?.data?.slice(0, EVENTS_PER_PAGE) || [];
   const totalCount = filteredData?.events?.totalCount || 0;
-  const lastPage = Math.ceil(totalCount / take);
+  const lastPage = Math.ceil(totalCount / EVENTS_PER_PAGE);
 
   const { data: locationData } = useQuery(GET_EVENTS_LOCATIONS);
 
   const handleLocationChange = (value: string) => {
-    setLocation(value === 'none' ? '' : value);
+    setFilters(prev => ({ ...prev, location: value === 'none' ? '' : value }));
   };
 
   const handleStatusChange = (value: string) => {
-    setEventStatus(value === 'none' ? '' : value);
+    setFilters(prev => ({ ...prev, eventStatus: value === 'none' ? undefined : value }));
   }
 
   return (
@@ -55,13 +59,13 @@ export default function Home() {
 
         <FilterEvents
           locationData={locationData}
-          location={location}
+          location={filters.location}
           onLocationChange={handleLocationChange}
-          dateFrom={dateFrom}
-          setDateFrom={setDateFrom}
-          dateTo={dateTo}
-          setDateTo={setDateTo}
-          eventStatus={eventStatus}
+          dateFrom={filters.dateFrom}
+          setDateFrom={(date) => setFilters(prev => ({ ...prev, dateFrom: date}))}
+          dateTo={filters.dateTo}
+          setDateTo={(date) => setFilters(prev => ({ ...prev, dateTo: date}))}
+          eventStatus={filters.eventStatus}
           onStatusChange={handleStatusChange}
         />
         
